@@ -1,2 +1,22 @@
-# kaggle-playground-series
-A collection of my solutions to Kaggle Playground Series competitions, showcasing end-to-end machine learning workflows including data cleaning, feature engineering, model building, and evaluation. Each project highlights practical problem-solving, iteration, and clear documentation of results.
+# Kaggle Playground Series
+
+A collection of end-to-end machine learning solutions for Kaggle Playground Series competitions, focusing on feature engineering, modeling, and iterative improvement.
+
+## About
+The Kaggle Playground Series consists of monthly, beginner-friendly competitions designed to practice and improve machine learning skills on synthetic and real-world datasets.
+
+## My Approach
+Across competitions, I focus on:
+- Exploratory Data Analysis (EDA)
+- Feature engineering and selection
+- Model experimentation (XGBoost, LightGBM, etc.)
+- Cross-validation and performance tuning
+- Iterative improvement based on leaderboard feedback
+
+## Repository Structure
+├── 2024-01-playground/
+│   ├── eda.ipynb
+│   ├── baseline-model.ipynb
+│   └── final-model.ipynb
+├── 2024-02-playground/
+│   └── ...
