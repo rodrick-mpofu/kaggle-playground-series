@@ -11,8 +11,8 @@
 - Evaluated using cross-validation and optimized metrics
 
 **Results:**
-- Best model achieved XX% accuracy / YY ROC-AUC
-- Insights: Certain features (e.g., contract type, tenure) were highly predictive
+- Best model achieved 0.91311 ROC-AUC
+- Numpy Neural Network achieved 0.89684 ROC-AUC
 
 **Citation (Kaggle):**
 ```bibtex
