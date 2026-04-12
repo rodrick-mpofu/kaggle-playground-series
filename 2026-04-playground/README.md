@@ -4,10 +4,9 @@
 
 **Competition:** [Kaggle Playground Series: S6E4](https://kaggle.com/competitions/playground-series-s6e4)
 
----
+```
 
 ## Project Structure
-
 irrigation-prediction/
 │
 ├── data/
@@ -41,7 +40,7 @@ irrigation-prediction/
 ├── .gitignore
 └── README.md
 
----
+```
 
 ## Approach
 
