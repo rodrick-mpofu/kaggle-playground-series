@@ -6,3 +6,4 @@ pandas>=2.0.0
 numpy>=1.24.0
 dython>=0.7.0
 sqlalchemy>=2.0.0
+missingno>=0.5.0
