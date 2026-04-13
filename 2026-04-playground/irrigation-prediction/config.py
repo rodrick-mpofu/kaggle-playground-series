@@ -1,6 +1,6 @@
 RANDOM_STATE = 42
 TEST_SIZE = 0.2
-N_TRIALS = 100
+N_TRIALS = 5
 TARGET = 'Irrigation_Need'
 ID_COL = 'id'
 NUM_CLASSES = 3
