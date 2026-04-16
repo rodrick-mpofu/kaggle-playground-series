@@ -59,7 +59,7 @@ def objective(trial, X_train, y_train, X_val, y_val, cfg):
 
     return score
 
-def run_study(X_train, y_train, X_val, y_val, n_trials, cfg):
+def run_study(X_train, y_train, X_val, y_val, cfg, n_trials):
     mlflow.set_experiment(cfg.mlflow.experiment_name)
 
     with mlflow.start_run(run_name="optuna_study"):

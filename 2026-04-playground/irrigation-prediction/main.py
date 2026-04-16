@@ -21,7 +21,7 @@ def main(cfg):
     X_submit = submission_transformation(submission_df, X_train)
 
     # Run Optuna study
-    study = run_study(X_train, y_train, X_val, y_val, n_trials=cfg.optuna.n_trials, cfg)
+    study = run_study(X_train, y_train, X_val, y_val, cfg, n_trials=cfg.optuna.n_trials)
 
     # Train final model and generate submission
     model = train_final_model(study, X_train, y_train, X_val, y_val, cfg)
