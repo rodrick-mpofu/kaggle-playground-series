@@ -5,3 +5,4 @@ mlruns/
 submissions/
 __pycache__/
 .env
+outputs/

@@ -6,9 +6,9 @@ from sklearn.metrics import balanced_accuracy_score
 
 def objective(trial, X_train, y_train, X_val, y_val, cfg):
     params = {
-        'objective': cfg.data.objective,
+        'objective': cfg.model.objective,
         'num_class': cfg.data.num_classes,
-        'eval_metric': cfg.data.eval_metric,
+        'eval_metric': cfg.model.eval_metric,
         'learning_rate': trial.suggest_float('learning_rate', 
                                              cfg.model.search_space.learning_rate.low, 
                                              cfg.model.search_space.learning_rate.high, log=True),
@@ -27,7 +27,7 @@ def objective(trial, X_train, y_train, X_val, y_val, cfg):
         'gamma': trial.suggest_float('gamma', cfg.model.search_space.gamma.low, 
                                      cfg.model.search_space.gamma.high),
         'random_state': cfg.random_state,
-        'n_jobs': cfg.n_jobs
+        'n_jobs': cfg.model.n_jobs
     }
 
     with mlflow.start_run(run_name=f"trial_{trial.number}", nested=True):
@@ -72,7 +72,7 @@ def run_study(X_train, y_train, X_val, y_val, cfg, n_trials):
         print(f"Resuming study with {len(study.trials)} trials completed")
 
         study.optimize(
-            lambda trial: objective(trial, X_train, y_train, X_val, y_val),
+            lambda trial: objective(trial, X_train, y_train, X_val, y_val, cfg),
             n_trials= cfg.optuna.n_trials
         )
 

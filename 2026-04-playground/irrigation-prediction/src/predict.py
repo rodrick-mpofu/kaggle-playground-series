@@ -11,7 +11,7 @@ def train_final_model(study, X_train, y_train, X_val, y_val, cfg):
         'num_class': cfg.data.num_classes,
         'eval_metric': cfg.model.eval_metric,
         'random_state': cfg.random_state,
-        'n_jobs': cfg.n_jobs
+        'n_jobs': cfg.model.n_jobs
     }
     best_round = study.best_trial.user_attrs['best_round']
 
