@@ -2,7 +2,6 @@ import xgboost as xgb
 import pandas as pd
 import numpy as np
 import mlflow.xgboost
-from config import RANDOM_STATE, NUM_CLASSES
 
 def train_final_model(study, X_train, y_train, X_val, y_val, cfg):
     import mlflow
