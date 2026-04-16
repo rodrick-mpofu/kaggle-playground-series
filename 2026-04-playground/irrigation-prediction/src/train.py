@@ -3,23 +3,31 @@ import optuna
 import mlflow
 import mlflow.xgboost
 from sklearn.metrics import balanced_accuracy_score
-from config import RANDOM_STATE, STUDY_NAME, STORAGE, EXPERIMENT_NAME, NUM_CLASSES
 
-def objective(trial, X_train, y_train, X_val, y_val):
+def objective(trial, X_train, y_train, X_val, y_val, cfg):
     params = {
-        'objective': 'multi:softmax',
-        'num_class': NUM_CLASSES,
-        'eval_metric': 'mlogloss',
-        'learning_rate': trial.suggest_float('learning_rate', 0.02, 0.1, log=True),
-        'max_depth': trial.suggest_int('max_depth', 6, 10),
-        'min_child_weight': trial.suggest_int('min_child_weight', 1, 80),
-        'subsample': trial.suggest_float('subsample', 0.7, 1.0),
-        'colsample_bytree': trial.suggest_float('colsample_bytree', 0.7, 1.0),
-        'reg_alpha': trial.suggest_float('reg_alpha', 0.0, 0.5),
-        'reg_lambda': trial.suggest_float('reg_lambda', 0.0, 5.0),
-        'gamma': trial.suggest_float('gamma', 0.0, 0.5),
-        'random_state': RANDOM_STATE,
-        'n_jobs': -1
+        'objective': cfg.data.objective,
+        'num_class': cfg.data.num_classes,
+        'eval_metric': cfg.data.eval_metric,
+        'learning_rate': trial.suggest_float('learning_rate', 
+                                             cfg.model.search_space.learning_rate.low, 
+                                             cfg.model.search_space.learning_rate.high, log=True),
+        'max_depth': trial.suggest_int('max_depth', cfg.model.search_space.max_depth.low, 
+                                       cfg.model.search_space.max_depth.high),
+        'min_child_weight': trial.suggest_int('min_child_weight', cfg.model.search_space.min_child_weight.low, 
+                                             cfg.model.search_space.min_child_weight.high),
+        'subsample': trial.suggest_float('subsample', cfg.model.search_space.subsample.low, 
+                                         cfg.model.search_space.subsample.high),
+        'colsample_bytree': trial.suggest_float('colsample_bytree', cfg.model.search_space.colsample_bytree.low, 
+                                               cfg.model.search_space.colsample_bytree.high),
+        'reg_alpha': trial.suggest_float('reg_alpha', cfg.model.search_space.reg_alpha.low,
+                                           cfg.model.search_space.reg_alpha.high),
+        'reg_lambda': trial.suggest_float('reg_lambda', cfg.model.search_space.reg_lambda.low,
+                                           cfg.model.search_space.reg_lambda.high),
+        'gamma': trial.suggest_float('gamma', cfg.model.search_space.gamma.low, 
+                                     cfg.model.search_space.gamma.high),
+        'random_state': cfg.random_state,
+        'n_jobs': cfg.n_jobs
     }
 
     with mlflow.start_run(run_name=f"trial_{trial.number}", nested=True):
@@ -31,10 +39,10 @@ def objective(trial, X_train, y_train, X_val, y_val):
         evals_result = {}
         model = xgb.train(
             params, dtrain,
-            num_boost_round=5000,
+            num_boost_round=cfg.model.num_boost_round,
             evals=[(dval, 'eval')],
-            early_stopping_rounds=100,
-            verbose_eval=False,
+            early_stopping_rounds=cfg.model.early_stopping_rounds,
+            verbose_eval=cfg.model.verbose_eval,
             evals_result=evals_result
         )
 
@@ -51,21 +59,21 @@ def objective(trial, X_train, y_train, X_val, y_val):
 
     return score
 
-def run_study(X_train, y_train, X_val, y_val, n_trials=100):
-    mlflow.set_experiment(EXPERIMENT_NAME)
+def run_study(X_train, y_train, X_val, y_val, n_trials, cfg):
+    mlflow.set_experiment(cfg.mlflow.experiment_name)
 
     with mlflow.start_run(run_name="optuna_study"):
         study = optuna.create_study(
-            study_name=STUDY_NAME,
-            storage=STORAGE,
-            direction="maximize",
+            study_name=cfg.optuna.study_name,
+            storage=cfg.optuna.storage,
+            direction=cfg.optuna.direction,
             load_if_exists=True
         )
         print(f"Resuming study with {len(study.trials)} trials completed")
 
         study.optimize(
             lambda trial: objective(trial, X_train, y_train, X_val, y_val),
-            n_trials=n_trials
+            n_trials= cfg.optuna.n_trials
         )
 
         mlflow.log_metric('best_balanced_accuracy', study.best_trial.value)

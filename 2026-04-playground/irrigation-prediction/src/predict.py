@@ -4,15 +4,15 @@ import numpy as np
 import mlflow.xgboost
 from config import RANDOM_STATE, NUM_CLASSES
 
-def train_final_model(study, X_train, y_train, X_val, y_val):
+def train_final_model(study, X_train, y_train, X_val, y_val, cfg):
     import mlflow
     best_params = {
         **study.best_trial.params,
-        'objective': 'multi:softmax',
-        'num_class': NUM_CLASSES,
-        'eval_metric': 'mlogloss',
-        'random_state': RANDOM_STATE,
-        'n_jobs': -1
+        'objective': cfg.model.objective,
+        'num_class': cfg.data.num_classes,
+        'eval_metric': cfg.model.eval_metric,
+        'random_state': cfg.random_state,
+        'n_jobs': cfg.n_jobs
     }
     best_round = study.best_trial.user_attrs['best_round']
 
@@ -28,7 +28,7 @@ def train_final_model(study, X_train, y_train, X_val, y_val):
 
     return model
 
-def generate_submission(model, X_submit, submission_df, le):
+def generate_submission(model, X_submit, submission_df, le, cfg):
     import mlflow
     dsubmit = xgb.DMatrix(X_submit, enable_categorical=True)
     preds = model.predict(dsubmit).astype(int)
@@ -38,7 +38,7 @@ def generate_submission(model, X_submit, submission_df, le):
         'id': submission_df['id'],
         'Irrigation_Need': labels
     })
-    path = "submissions/submission.csv"
+    path = cfg.paths.submissions + "submission.csv"
     submission.to_csv(path, index=False)
     mlflow.log_artifact(path)
     print(submission['Irrigation_Need'].value_counts())
