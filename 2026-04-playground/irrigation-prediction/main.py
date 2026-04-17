@@ -24,7 +24,7 @@ def main(cfg):
     study = run_study(X_train, y_train, X_val, y_val, cfg, n_trials=cfg.optuna.n_trials)
 
     # Train final model and generate submission
-    model = train_final_model(study, X_train, y_train, X_val, y_val, cfg)
+    model = train_final_model(study, X_train, y_train, X_val, y_val, cfg, le)
     generate_submission(model, X_submit, submission_df, le, cfg)
 
 if __name__ == "__main__":
