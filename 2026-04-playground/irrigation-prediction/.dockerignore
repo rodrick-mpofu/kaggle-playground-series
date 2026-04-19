@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+mlruns/
+irrigation_study.db
+notebooks/
+submissions/
+tests/
+*.db
+*.log
+outputs/
+hydra_outputs/

@@ -1,7 +1,8 @@
 import gradio as gr
 import requests
+import os
 
-API_URL = "http://127.0.0.1:8000/api/v1/predict"
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/api/v1/predict")
 
 # Based on your actual dataset — update these with real unique values
 SOIL_TYPES = ["Sandy", "Loam", "Clay", "Silt", "Peaty", "Chalky"]

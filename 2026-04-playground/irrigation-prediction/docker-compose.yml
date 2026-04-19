@@ -1,0 +1,67 @@
+services:
+
+  train:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.train
+    container_name: irrigation_train
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./mlruns:/app/mlruns
+      - ./irrigation_study.db:/app/irrigation_study.db
+    environment:
+      - PYTHONPATH=/app
+    profiles:
+      - train
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: irrigation_api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models:/app/models
+      - ./mlruns:/app/mlruns
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - mlflow
+    profiles:
+      - serve
+
+  gradio:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: irrigation_gradio
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./models:/app/models
+    environment:
+      - PYTHONPATH=/app
+      - API_URL=http://api:8000/api/v1/predict
+    command: ["python", "app/gradio_app.py"]
+    depends_on:
+      - api
+    profiles:
+      - serve
+
+  mlflow:
+    image: python:3.12-slim
+    container_name: irrigation_mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+    command: >
+      sh -c "pip install mlflow -q &&
+             mlflow server
+             --host 0.0.0.0
+             --port 5000
+             --backend-store-uri /mlruns"
+    profiles:
+      - serve
